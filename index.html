@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Oficial - Comunas de Ibagué</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f6f9;
+            display: flex;
+            gap: 20px;
+            height: 100vh;
+        }
+
+        #mapa-container {
+            flex: 1.3;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #mapa-container h2 {
+            margin: 0 0 5px 0;
+            color: #1a252f;
+            width: 100%;
+        }
+
+        #mapa-container p {
+            margin: 0 0 15px 0;
+            color: #666;
+            font-size: 13px;
+            width: 100%;
+        }
+
+        /* Contenedor exacto para la imagen */
+        .mapa-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 850px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #e5e7eb;
+        }
+
+        .mapa-wrapper img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Botones / Pines interactivos */
+        .zona-comuna {
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            background: rgba(0, 123, 255, 0.9);
+            color: white;
+            border: 2px solid white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s, background-color 0.2s;
+            z-index: 5;
+            transform: translate(-50%, -50%);
+        }
+
+        .zona-comuna:hover {
+            transform: translate(-50%, -50%) scale(1.35);
+            background: #0056b3;
+            z-index: 10;
+        }
+
+        /* Posiciones ajustadas sobre tu imagen de Ibagué */
+        #c1 {
+            top: 33%;
+            left: 24%;
+        }
+
+        #c2 {
+            top: 25%;
+            left: 25%;
+        }
+
+        #c3 {
+            top: 32%;
+            left: 34%;
+        }
+
+        #c4 {
+            top: 36%;
+            left: 42.5%;
+        }
+
+        #c5 {
+            top: 36%;
+            left: 52%;
+        }
+
+        #c6 {
+            top: 27.5%;
+            left: 55.5%;
+        }
+
+        #c7 {
+            top: 30%;
+            left: 78.5%;
+        }
+
+        #c8 {
+            top: 39%;
+            left: 65.5%;
+        }
+
+        #c9 {
+            top: 47%;
+            left: 52%;
+        }
+
+        #c10 {
+            top: 43.5%;
+            left: 37.5%;
+        }
+
+        #c11 {
+            top: 49.5%;
+            left: 31.3%;
+        }
+
+        #c12 {
+            top: 46%;
+            left: 23%;
+        }
+
+        #c13 {
+            top: 57%;
+            left: 15%;
+        }
+
+        /* Panel Lateral */
+        #panel-datos {
+            flex: 0.7;
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            overflow-y: auto;
+        }
+
+        .header-panel {
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .header-panel h2 {
+            margin: 0;
+            color: #1a252f;
+        }
+
+        .header-panel p {
+            margin: 5px 0 0;
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .btn-reset {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .btn-reset:hover {
+            background-color: #0056b3;
+        }
+
+        .card-metric {
+            background: #eef5ff;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        .card-metric h3 {
+            margin: 0 0 5px;
+            font-size: 12px;
+            color: #0056b3;
+            text-transform: uppercase;
+        }
+
+        .card-metric p {
+            margin: 0;
+            font-size: 26px;
+            font-weight: bold;
+            color: #1a252f;
+        }
+
+        .item-registro {
+            background: #fff;
+            border: 1px solid #e1e8ed;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .item-registro div {
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+
+        .item-registro strong {
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="mapa-container">
+        <h2>Mapa Oficial de Ibagué por Comunas</h2>
+        <p>Haz clic en el número de cualquier comuna para filtrar la información de Google Sheets</p>
+
+        <div class="mapa-wrapper">
+            <!-- Carga la imagen local de tu carpeta -->
+            <img id="img-mapa" src="mapa.png" alt="Mapa Oficial de Ibagué por Comunas"
+                onerror="this.onerror=null; this.src='mapa.jpg';">
+
+            <!-- Botones interactivos -->
+            <div id="c1" class="zona-comuna" onclick="actualizarPanel('Comuna 1')">1</div>
+            <div id="c2" class="zona-comuna" onclick="actualizarPanel('Comuna 2')">2</div>
+            <div id="c3" class="zona-comuna" onclick="actualizarPanel('Comuna 3')">3</div>
+            <div id="c4" class="zona-comuna" onclick="actualizarPanel('Comuna 4')">4</div>
+            <div id="c5" class="zona-comuna" onclick="actualizarPanel('Comuna 5')">5</div>
+            <div id="c6" class="zona-comuna" onclick="actualizarPanel('Comuna 6')">6</div>
+            <div id="c7" class="zona-comuna" onclick="actualizarPanel('Comuna 7')">7</div>
+            <div id="c8" class="zona-comuna" onclick="actualizarPanel('Comuna 8')">8</div>
+            <div id="c9" class="zona-comuna" onclick="actualizarPanel('Comuna 9')">9</div>
+            <div id="c10" class="zona-comuna" onclick="actualizarPanel('Comuna 10')">10</div>
+            <div id="c11" class="zona-comuna" onclick="actualizarPanel('Comuna 11')">11</div>
+            <div id="c12" class="zona-comuna" onclick="actualizarPanel('Comuna 12')">12</div>
+            <div id="c13" class="zona-comuna" onclick="actualizarPanel('Comuna 13')">13</div>
+        </div>
+    </div>
+
+    <div id="panel-datos">
+        <div class="header-panel">
+            <h2 id="titulo-comuna">Todas las Comunas</h2>
+            <p id="subtitulo">Consolidado general de respuestas</p>
+            <button class="btn-reset" onclick="actualizarPanel('Todas las Comunas')">Mostrar Todas</button>
+        </div>
+
+        <div class="card-metric">
+            <h3>Total Respuestas</h3>
+            <p id="total-respuestas">0</p>
+        </div>
+
+        <div id="lista-detalles">
+            <p style="color: #666;">Cargando respuestas de Google Sheets...</p>
+        </div>
+    </div>
+
+    <script>
+        let datosGlobales = [];
+
+        // Carga los datos directamente desde tu servidor local
+        fetch('/datos')
+            .then(res => {
+                if (!res.ok) throw new Error("Error en servidor local");
+                return res.json();
+            })
+            .then(data => {
+                console.log("Datos recibidos:", data);
+                datosGlobales = data;
+                actualizarPanel("Todas las Comunas");
+            })
+            .catch(err => {
+                console.error("Error al cargar datos:", err);
+                document.getElementById('lista-detalles').innerHTML =
+                    '<p style="color:red;">Error de conexión. Asegúrate de ejecutar el servidor proxy de Python.</p>';
+            });
+
+        function actualizarPanel(comuna) {
+            document.getElementById('titulo-comuna').innerText = comuna;
+
+            let filtrados = datosGlobales;
+            if (comuna !== "Todas las Comunas") {
+                let numComuna = comuna.replace(/\D/g, "");
+                filtrados = datosGlobales.filter(item => {
+                    let val = JSON.stringify(item).toLowerCase();
+                    return val.includes(comuna.toLowerCase()) || (numComuna && val.includes(`comuna ${numComuna}`));
+                });
+                document.getElementById('subtitulo').innerText = `Resultados de ${comuna}`;
+            } else {
+                document.getElementById('subtitulo').innerText = `Consolidado general de respuestas`;
+            }
+
+            // ORDENAR DE MAYOR A MENOR SEGÚN "POSITIVIDAD"
+            filtrados.sort((a, b) => {
+                let valA = parseFloat(a['POSITIVIDAD']) || 0;
+                let valB = parseFloat(b['POSITIVIDAD']) || 0;
+                return valB - valA; // Descendente (de mayor a menor)
+            });
+
+            document.getElementById('total-respuestas').innerText = filtrados.length;
+
+            let html = '';
+            if (filtrados.length === 0) {
+                html = '<p style="color: #888;">No hay encuestas registradas para esta comuna aún.</p>';
+            } else {
+                filtrados.forEach((reg, idx) => {
+                    html += `<div class="item-registro"><strong>#${idx + 1}</strong>`;
+                    Object.keys(reg).forEach(k => {
+                        if (reg[k] !== '') {
+                            html += `<div><strong>${k}:</strong> ${reg[k]}</div>`;
+                        }
+                    });
+                    html += `</div>`;
+                });
+            }
+            document.getElementById('lista-detalles').innerHTML = html;
+        }
+    </script>
+</body>
+
+</html>
