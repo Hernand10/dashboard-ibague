@@ -275,7 +275,6 @@
             <button class="btn-reset" onclick="actualizarPanel('Todas las Comunas')">Mostrar Todas</button>
         </div>
 
-        <!-- RESUMEN DE MÉTRICAS -->
         <div class="metrics-grid">
             <div class="card-metric">
                 <h3>Encuestas</h3>
@@ -303,13 +302,6 @@
             .then(res => res.json())
             .then(data => {
                 datosGlobales = data;
-
-                // MUESTRA EN CONSOLA LAS COLUMNAS EXACTAS QUE LLEGAN DE GOOGLE SHEETS
-                if (data.length > 0) {
-                    console.log("📌 COLUMNAS DETECTADAS EN TU SHEET/TALLY:", Object.keys(data[0]));
-                    console.log("📌 PRIMER REGISTRO COMPLETO:", data[0]);
-                }
-
                 actualizarPanel("Todas las Comunas");
             })
             .catch(err => {
@@ -317,16 +309,15 @@
                 document.getElementById('lista-detalles').innerHTML = '<p style="color:red;">Error al cargar datos.</p>';
             });
 
-        // Función con búsqueda ULTRA flexible de números
-        function obtenerNumeroFlex(item, palabras) {
+        // Búsqueda directa por coincidencia parcial limpia
+        function obtenerNumeroPorClave(item, subcadena) {
             for (let key in item) {
-                let keyNormal = key.toLowerCase().trim();
+                // Limpia espacios y convierte a minúsculas
+                let keyLimpia = String(key || "").toLowerCase().trim();
 
-                // Si la clave de la columna contiene alguna de las palabras buscadas
-                if (palabras.some(p => keyNormal.includes(p))) {
+                if (keyLimpia.includes(subcadena)) {
                     let val = item[key];
                     if (val !== undefined && val !== null && val !== '') {
-                        // Limpia texto y extrae el primer número
                         let num = parseFloat(String(val).replace(',', '.').replace(/[^0-9.]/g, ''));
                         if (!isNaN(num)) return num;
                     }
@@ -350,20 +341,20 @@
                 document.getElementById('subtitulo').innerText = `Consolidado general de respuestas`;
             }
 
-            // ORDENAR
+            // ORDENAR DE MAYOR A MENOR POR POSITIVIDAD
             filtrados.sort((a, b) => {
-                let valA = obtenerNumeroFlex(a, ['positiv']);
-                let valB = obtenerNumeroFlex(b, ['positiv']);
+                let valA = obtenerNumeroPorClave(a, 'positivida');
+                let valB = obtenerNumeroPorClave(b, 'positivida');
                 return valB - valA;
             });
 
-            // SUMAS
+            // SUMAS DE MÉTRICAS
             let sumaPruebas = 0;
             let sumaPositividad = 0;
 
             filtrados.forEach(item => {
-                sumaPruebas += obtenerNumeroFlex(item, ['prueba', 'cantid']);
-                sumaPositividad += obtenerNumeroFlex(item, ['positiv']);
+                sumaPruebas += obtenerNumeroPorClave(item, 'pruebas');
+                sumaPositividad += obtenerNumeroPorClave(item, 'positivida');
             });
 
             document.getElementById('total-respuestas').innerText = filtrados.length;
@@ -387,3 +378,6 @@
             document.getElementById('lista-detalles').innerHTML = html;
         }
     </script>
+</body>
+
+</html>
