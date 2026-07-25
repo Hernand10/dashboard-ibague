@@ -86,7 +86,7 @@
             z-index: 10;
         }
 
-        /* POSICIONES DE COMUNAS SOBRE EL MAPA */
+        /* POSICIONES DE COMUNAS */
         #c1 {
             top: 40%;
             left: 20%;
@@ -195,7 +195,7 @@
             background-color: #0056b3;
         }
 
-        /* Grid para las Tarjetas de Métricas */
+        /* Tarjetas de Métricas */
         .metrics-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -275,7 +275,7 @@
             <button class="btn-reset" onclick="actualizarPanel('Todas las Comunas')">Mostrar Todas</button>
         </div>
 
-        <!-- TARJETAS DE MÉTRICAS -->
+        <!-- RESUMEN DE MÉTRICAS -->
         <div class="metrics-grid">
             <div class="card-metric">
                 <h3>Encuestas</h3>
@@ -286,7 +286,7 @@
                 <p id="total-pruebas">0</p>
             </div>
             <div class="card-metric">
-                <h3>Total Positivos</h3>
+                <h3>Total Positividad</h3>
                 <p id="total-positividad">0</p>
             </div>
         </div>
@@ -310,23 +310,26 @@
                 document.getElementById('lista-detalles').innerHTML = '<p style="color:red;">Error al cargar datos.</p>';
             });
 
-        // Limpia el texto removiendo tildes y convirtiendo a minúsculas
-        function normalizarTexto(texto) {
-            return String(texto || "")
-                .toLowerCase()
-                .normalize("NFD")
-                .replace(/[\u0300-\u036f]/g, "");
-        }
+        // Función exacta para encontrar el valor numérico en el objeto de la respuesta
+        function obtenerValorCampoLimpio(item, palabraBuscada) {
+            for (let key in item) {
+                // Limpiar tildes, minúsculas y espacios
+                let keyLimpia = String(key || "")
+                    .toLowerCase()
+                    .normalize("NFD")
+                    .replace(/[\u0300-\u036f]/g, "")
+                    .trim();
 
-        // Busca una columna clave de forma flexible y extrae el valor numérico
-        function obtenerValorClave(item, terminosBusqueda) {
-            for (let k in item) {
-                let keyLimpia = normalizarTexto(k);
-
-                if (terminosBusqueda.some(term => keyLimpia.includes(term))) {
-                    let numMatch = String(item[k]).match(/\d+(\.\d+)?/);
-                    if (numMatch) {
-                        return parseFloat(numMatch[0]);
+                if (keyLimpia.includes(palabraBuscada)) {
+                    let val = String(item[key]).trim();
+                    let num = parseFloat(val);
+                    if (!isNaN(num)) {
+                        return num;
+                    }
+                    // Si viene como texto con números "10 casos"
+                    let match = val.match(/\d+(\.\d+)?/);
+                    if (match) {
+                        return parseFloat(match[0]);
                     }
                 }
             }
@@ -348,23 +351,23 @@
                 document.getElementById('subtitulo').innerText = `Consolidado general de respuestas`;
             }
 
-            // ORDENAR DE MAYOR A MENOR SEGÚN POSITIVIDAD
+            // Ordenar de mayor a menor según la columna POSITIVIDAD
             filtrados.sort((a, b) => {
-                let valA = obtenerValorClave(a, ['positiv']);
-                let valB = obtenerValorClave(b, ['positiv']);
+                let valA = obtenerValorCampoLimpio(a, 'positivida');
+                let valB = obtenerValorCampoLimpio(b, 'positivida');
                 return valB - valA;
             });
 
-            // CÁLCULO DE TOTALES ACUMULADOS
+            // CÁLCULO DE TOTALES SUMADOS
             let sumaPruebas = 0;
             let sumaPositividad = 0;
 
             filtrados.forEach(item => {
-                sumaPruebas += obtenerValorClave(item, ['prueba', 'cantid']);
-                sumaPositividad += obtenerValorClave(item, ['positiv']);
+                sumaPruebas += obtenerValorCampoLimpio(item, 'prueba');
+                sumaPositividad += obtenerValorCampoLimpio(item, 'positivida');
             });
 
-            // ACTUALIZAR INTERFAZ
+            // MOSTRAR EN PANTALLA
             document.getElementById('total-respuestas').innerText = filtrados.length;
             document.getElementById('total-pruebas').innerText = sumaPruebas;
             document.getElementById('total-positividad').innerText = sumaPositividad;
