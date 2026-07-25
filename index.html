@@ -309,14 +309,15 @@
                 document.getElementById('lista-detalles').innerHTML = '<p style="color:red;">Error al cargar datos.</p>';
             });
 
-        // Función exacta e infalible leyendo por la propiedad directa o buscando la palabra clave
-        function obtenerValorExacto(item, termino) {
+        // Función que limpia la clave (quita ":", espacios y convierte a mayúsculas)
+        function obtenerValorCampoLimpio(item, busqueda) {
             if (!item) return 0;
 
-            // 1. Intento directo por la clave exacta de tu Tally
             for (let key in item) {
-                let keyLimpia = key.trim().toUpperCase();
-                if (keyLimpia === termino || keyLimpia.includes(termino)) {
+                // Quita dos puntos (:), espacios extra y pasa a mayúsculas
+                let keyLimpia = key.replace(/:/g, '').trim().toUpperCase();
+
+                if (keyLimpia === busqueda || keyLimpia.includes(busqueda)) {
                     let val = item[key];
                     if (val !== null && val !== undefined && val !== '') {
                         let num = parseFloat(String(val).replace(',', '.').replace(/[^\d.]/g, ''));
@@ -344,8 +345,8 @@
 
             // Ordenar de mayor a menor por POSITIVIDAD
             filtrados.sort((a, b) => {
-                let valA = obtenerValorExacto(a, 'POSITIVIDAD');
-                let valB = obtenerValorExacto(b, 'POSITIVIDAD');
+                let valA = obtenerValorCampoLimpio(a, 'POSITIVIDAD');
+                let valB = obtenerValorCampoLimpio(b, 'POSITIVIDAD');
                 return valB - valA;
             });
 
@@ -354,8 +355,8 @@
             let sumaPositividad = 0;
 
             filtrados.forEach(item => {
-                sumaPruebas += obtenerValorExacto(item, 'CANTIDAD DE PRUEBAS');
-                sumaPositividad += obtenerValorExacto(item, 'POSITIVIDAD');
+                sumaPruebas += obtenerValorCampoLimpio(item, 'CANTIDAD DE PRUEBAS');
+                sumaPositividad += obtenerValorCampoLimpio(item, 'POSITIVIDAD');
             });
 
             document.getElementById('total-respuestas').innerText = filtrados.length;
@@ -379,6 +380,3 @@
             document.getElementById('lista-detalles').innerHTML = html;
         }
     </script>
-</body>
-
-</html>
