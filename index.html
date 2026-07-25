@@ -44,7 +44,6 @@
             width: 100%;
         }
 
-        /* Contenedor exacto para la imagen */
         .mapa-wrapper {
             position: relative;
             width: 100%;
@@ -52,7 +51,7 @@
             border: 1px solid #d1d5db;
             border-radius: 8px;
             overflow: hidden;
-            background: #e5e7eb;
+            background: #ffffff;
         }
 
         .mapa-wrapper img {
@@ -61,12 +60,11 @@
             display: block;
         }
 
-        /* Botones / Pines interactivos */
         .zona-comuna {
             position: absolute;
-            width: 32px;
-            height: 32px;
-            background: rgba(0, 123, 255, 0.9);
+            width: 28px;
+            height: 28px;
+            background: #007bff;
             color: white;
             border: 2px solid white;
             border-radius: 50%;
@@ -76,7 +74,7 @@
             font-weight: bold;
             font-size: 13px;
             cursor: pointer;
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
             transition: transform 0.2s, background-color 0.2s;
             z-index: 5;
             transform: translate(-50%, -50%);
@@ -88,70 +86,70 @@
             z-index: 10;
         }
 
-        /* Posiciones ajustadas sobre tu imagen de Ibagué */
+        /* TUS POSICIONES DE COMUNAS PERSONALIZADAS */
         #c1 {
-            top: 33%;
-            left: 24%;
+            top: 40%;
+            left: 20%;
         }
 
         #c2 {
-            top: 25%;
-            left: 25%;
+            top: 35%;
+            left: 20%;
         }
 
         #c3 {
-            top: 32%;
-            left: 34%;
+            top: 40%;
+            left: 25%;
         }
 
         #c4 {
-            top: 36%;
-            left: 42.5%;
+            top: 45%;
+            left: 30%;
         }
 
         #c5 {
-            top: 36%;
-            left: 52%;
+            top: 45%;
+            left: 35%;
         }
 
         #c6 {
-            top: 27.5%;
-            left: 55.5%;
+            top: 38%;
+            left: 38%;
         }
 
         #c7 {
-            top: 30%;
-            left: 78.5%;
+            top: 38%;
+            left: 50%;
         }
 
         #c8 {
-            top: 39%;
-            left: 65.5%;
+            top: 45%;
+            left: 45%;
         }
 
         #c9 {
-            top: 47%;
-            left: 52%;
+            top: 52%;
+            left: 35%;
         }
 
         #c10 {
-            top: 43.5%;
-            left: 37.5%;
+            top: 48%;
+            left: 27%;
         }
 
         #c11 {
-            top: 49.5%;
-            left: 31.3%;
+            top: 54%;
+            left: 22%;
         }
 
         #c12 {
-            top: 46%;
-            left: 23%;
+            top: 50%;
+            left: 18%;
         }
 
         #c13 {
-            top: 57%;
-            left: 15%;
+            top: 58%;
+            left: 12%;
         }
 
         /* Panel Lateral */
@@ -197,24 +195,31 @@
             background-color: #0056b3;
         }
 
+        /* Grid para las tarjetas de Métricas */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
         .card-metric {
             background: #eef5ff;
             border-left: 4px solid #007bff;
-            padding: 15px;
+            padding: 12px 10px;
             border-radius: 6px;
-            margin-bottom: 15px;
         }
 
         .card-metric h3 {
             margin: 0 0 5px;
-            font-size: 12px;
+            font-size: 10px;
             color: #0056b3;
             text-transform: uppercase;
         }
 
         .card-metric p {
             margin: 0;
-            font-size: 26px;
+            font-size: 20px;
             font-weight: bold;
             color: #1a252f;
         }
@@ -242,14 +247,11 @@
 
     <div id="mapa-container">
         <h2>Mapa Oficial de Ibagué por Comunas</h2>
-        <p>Haz clic en el número de cualquier comuna para filtrar la información de Google Sheets</p>
+        <p>Haz clic en el número de cualquier comuna para filtrar la información</p>
 
         <div class="mapa-wrapper">
-            <!-- Carga la imagen local de tu carpeta -->
-            <img id="img-mapa" src="mapa.png" alt="Mapa Oficial de Ibagué por Comunas"
-                onerror="this.onerror=null; this.src='mapa.jpg';">
+            <img id="img-mapa" src="mapa.png" alt="Mapa de Ibagué">
 
-            <!-- Botones interactivos -->
             <div id="c1" class="zona-comuna" onclick="actualizarPanel('Comuna 1')">1</div>
             <div id="c2" class="zona-comuna" onclick="actualizarPanel('Comuna 2')">2</div>
             <div id="c3" class="zona-comuna" onclick="actualizarPanel('Comuna 3')">3</div>
@@ -273,35 +275,51 @@
             <button class="btn-reset" onclick="actualizarPanel('Todas las Comunas')">Mostrar Todas</button>
         </div>
 
-        <div class="card-metric">
-            <h3>Total Respuestas</h3>
-            <p id="total-respuestas">0</p>
+        <!-- TARJETAS DE MÉTRICAS (RESPUESTAS, TOTAL PRUEBAS Y TOTAL POSITIVIDAD) -->
+        <div class="metrics-grid">
+            <div class="card-metric">
+                <h3>Encuestas</h3>
+                <p id="total-respuestas">0</p>
+            </div>
+            <div class="card-metric">
+                <h3>Total Pruebas</h3>
+                <p id="total-pruebas">0</p>
+            </div>
+            <div class="card-metric">
+                <h3>Total Positivos</h3>
+                <p id="total-positividad">0</p>
+            </div>
         </div>
 
         <div id="lista-detalles">
-            <p style="color: #666;">Cargando respuestas de Google Sheets...</p>
+            <p style="color: #666;">Cargando datos...</p>
         </div>
     </div>
 
     <script>
         let datosGlobales = [];
 
-        // Carga los datos directamente desde tu servidor local
         fetch('/datos')
-            .then(res => {
-                if (!res.ok) throw new Error("Error en servidor local");
-                return res.json();
-            })
+            .then(res => res.json())
             .then(data => {
-                console.log("Datos recibidos:", data);
                 datosGlobales = data;
                 actualizarPanel("Todas las Comunas");
             })
             .catch(err => {
-                console.error("Error al cargar datos:", err);
-                document.getElementById('lista-detalles').innerHTML =
-                    '<p style="color:red;">Error de conexión. Asegúrate de ejecutar el servidor proxy de Python.</p>';
+                console.error(err);
+                document.getElementById('lista-detalles').innerHTML = '<p style="color:red;">Error al cargar datos.</p>';
             });
+
+        function obtenerValorClave(item, terminosBusqueda) {
+            for (let k in item) {
+                let keyUpper = k.toUpperCase();
+                if (terminosBusqueda.some(term => keyUpper.includes(term))) {
+                    let num = parseFloat(item[k]);
+                    return isNaN(num) ? 0 : num;
+                }
+            }
+            return 0;
+        }
 
         function actualizarPanel(comuna) {
             document.getElementById('titulo-comuna').innerText = comuna;
@@ -318,14 +336,26 @@
                 document.getElementById('subtitulo').innerText = `Consolidado general de respuestas`;
             }
 
-            // ORDENAR DE MAYOR A MENOR SEGÚN "POSITIVIDAD"
+            // Ordenar de mayor a menor por positividad
             filtrados.sort((a, b) => {
-                let valA = parseFloat(a['POSITIVIDAD']) || 0;
-                let valB = parseFloat(b['POSITIVIDAD']) || 0;
-                return valB - valA; // Descendente (de mayor a menor)
+                let valA = obtenerValorClave(a, ['POSITIVIDAD', 'POSITIVO']);
+                let valB = obtenerValorClave(b, ['POSITIVIDAD', 'POSITIVO']);
+                return valB - valA;
             });
 
+            // CÁLCULO DE TOTALES ACUMULADOS
+            let sumaPruebas = 0;
+            let sumaPositividad = 0;
+
+            filtrados.forEach(item => {
+                sumaPruebas += obtenerValorClave(item, ['CANTIDAD DE PRUEBAS', 'PRUEBA', 'PRUEBAS', 'CANTIDAD']);
+                sumaPositividad += obtenerValorClave(item, ['POSITIVIDAD', 'POSITIVO', 'POSITIVOS']);
+            });
+
+            // Actualizar interfaz
             document.getElementById('total-respuestas').innerText = filtrados.length;
+            document.getElementById('total-pruebas').innerText = sumaPruebas;
+            document.getElementById('total-positividad').innerText = sumaPositividad;
 
             let html = '';
             if (filtrados.length === 0) {
