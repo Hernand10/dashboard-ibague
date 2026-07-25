@@ -86,7 +86,7 @@
             z-index: 10;
         }
 
-        /* POSICIONES DE COMUNAS */
+        /* POSICIONES DE COMUNAS SOBRE EL MAPA */
         #c1 {
             top: 40%;
             left: 20%;
@@ -159,13 +159,15 @@
             border-radius: 12px;
             padding: 25px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
 
         .header-panel {
             border-bottom: 2px solid #007bff;
             padding-bottom: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .header-panel h2 {
@@ -195,31 +197,41 @@
             background-color: #0056b3;
         }
 
-        /* Tarjetas de Métricas */
+        /* Contenedor de la lista con scroll independiente */
+        #lista-detalles {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 5px;
+            margin-bottom: 15px;
+        }
+
+        /* Tarjetas de Métricas en la parte inferior */
         .metrics-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 10px;
-            margin-bottom: 20px;
+            padding-top: 15px;
+            border-top: 2px solid #e1e8ed;
+            background: #ffffff;
         }
 
         .card-metric {
             background: #eef5ff;
             border-left: 4px solid #007bff;
-            padding: 12px 10px;
+            padding: 10px 8px;
             border-radius: 6px;
         }
 
         .card-metric h3 {
-            margin: 0 0 5px;
-            font-size: 10px;
+            margin: 0 0 4px;
+            font-size: 9px;
             color: #0056b3;
             text-transform: uppercase;
         }
 
         .card-metric p {
             margin: 0;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
             color: #1a252f;
         }
@@ -275,6 +287,12 @@
             <button class="btn-reset" onclick="actualizarPanel('Todas las Comunas')">Mostrar Todas</button>
         </div>
 
+        <!-- LISTA DE DETALLES (AHORA ARRIBA DEL RESUMEN) -->
+        <div id="lista-detalles">
+            <p style="color: #666;">Cargando datos...</p>
+        </div>
+
+        <!-- RESUMEN DE MÉTRICAS (UBICADO EN LA PARTE INFERIOR) -->
         <div class="metrics-grid">
             <div class="card-metric">
                 <h3>Encuestas</h3>
@@ -289,16 +307,11 @@
                 <p id="total-positividad">0</p>
             </div>
         </div>
-
-        <div id="lista-detalles">
-            <p style="color: #666;">Cargando datos...</p>
-        </div>
     </div>
 
     <script>
         let datosGlobales = [];
 
-        // Forzamos la descarga sin caché agregando un parámetro dinámico
         fetch('/datos?v=' + new Date().getTime())
             .then(res => res.json())
             .then(data => {
@@ -310,13 +323,11 @@
                 document.getElementById('lista-detalles').innerHTML = '<p style="color:red;">Error al cargar datos.</p>';
             });
 
-        // Extrae el valor numérico buscando la palabra o accediendo por la posición de la columna
         function obtenerNumeroPorPosicionOCat(item, palabraBuscada, indiceRespaldo) {
             if (!item) return 0;
 
             let keys = Object.keys(item);
 
-            // 1. Intentar buscar por palabra clave en cualquier columna
             for (let k of keys) {
                 let keyLimpia = k.toUpperCase();
                 if (keyLimpia.includes(palabraBuscada)) {
@@ -328,7 +339,6 @@
                 }
             }
 
-            // 2. Si fallan los nombres, acceder directamente por el índice de posición del array de claves
             if (keys.length > indiceRespaldo) {
                 let keyPorIndice = keys[indiceRespaldo];
                 let val = item[keyPorIndice];
@@ -356,7 +366,7 @@
                 document.getElementById('subtitulo').innerText = `Consolidado general de respuestas`;
             }
 
-            // Indice 7 corresponde a POSITIVIDAD (la 8ª columna)
+            // Ordenar por Positividad
             filtrados.sort((a, b) => {
                 let valA = obtenerNumeroPorPosicionOCat(a, 'POSITIV', 7);
                 let valB = obtenerNumeroPorPosicionOCat(b, 'POSITIV', 7);
@@ -367,7 +377,6 @@
             let sumaPositividad = 0;
 
             filtrados.forEach(item => {
-                // Indice 6 = CANTIDAD DE PRUEBAS, Indice 7 = POSITIVIDAD
                 sumaPruebas += obtenerNumeroPorPosicionOCat(item, 'CANTIDAD', 6);
                 sumaPositividad += obtenerNumeroPorPosicionOCat(item, 'POSITIV', 7);
             });
@@ -393,3 +402,6 @@
             document.getElementById('lista-detalles').innerHTML = html;
         }
     </script>
+</body>
+
+</html>
