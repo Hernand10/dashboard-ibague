@@ -86,7 +86,7 @@
             z-index: 10;
         }
 
-        /* TUS POSICIONES DE COMUNAS PERSONALIZADAS */
+        /* POSICIONES DE COMUNAS SOBRE EL MAPA */
         #c1 {
             top: 40%;
             left: 20%;
@@ -195,7 +195,7 @@
             background-color: #0056b3;
         }
 
-        /* Grid para las tarjetas de Métricas */
+        /* Grid para las Tarjetas de Métricas */
         .metrics-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -275,7 +275,7 @@
             <button class="btn-reset" onclick="actualizarPanel('Todas las Comunas')">Mostrar Todas</button>
         </div>
 
-        <!-- TARJETAS DE MÉTRICAS (RESPUESTAS, TOTAL PRUEBAS Y TOTAL POSITIVIDAD) -->
+        <!-- TARJETAS DE MÉTRICAS -->
         <div class="metrics-grid">
             <div class="card-metric">
                 <h3>Encuestas</h3>
@@ -310,12 +310,24 @@
                 document.getElementById('lista-detalles').innerHTML = '<p style="color:red;">Error al cargar datos.</p>';
             });
 
+        // Limpia el texto removiendo tildes y convirtiendo a minúsculas
+        function normalizarTexto(texto) {
+            return String(texto || "")
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "");
+        }
+
+        // Busca una columna clave de forma flexible y extrae el valor numérico
         function obtenerValorClave(item, terminosBusqueda) {
             for (let k in item) {
-                let keyUpper = k.toUpperCase();
-                if (terminosBusqueda.some(term => keyUpper.includes(term))) {
-                    let num = parseFloat(item[k]);
-                    return isNaN(num) ? 0 : num;
+                let keyLimpia = normalizarTexto(k);
+
+                if (terminosBusqueda.some(term => keyLimpia.includes(term))) {
+                    let numMatch = String(item[k]).match(/\d+(\.\d+)?/);
+                    if (numMatch) {
+                        return parseFloat(numMatch[0]);
+                    }
                 }
             }
             return 0;
@@ -336,10 +348,10 @@
                 document.getElementById('subtitulo').innerText = `Consolidado general de respuestas`;
             }
 
-            // Ordenar de mayor a menor por positividad
+            // ORDENAR DE MAYOR A MENOR SEGÚN POSITIVIDAD
             filtrados.sort((a, b) => {
-                let valA = obtenerValorClave(a, ['POSITIVIDAD', 'POSITIVO']);
-                let valB = obtenerValorClave(b, ['POSITIVIDAD', 'POSITIVO']);
+                let valA = obtenerValorClave(a, ['positiv']);
+                let valB = obtenerValorClave(b, ['positiv']);
                 return valB - valA;
             });
 
@@ -348,11 +360,11 @@
             let sumaPositividad = 0;
 
             filtrados.forEach(item => {
-                sumaPruebas += obtenerValorClave(item, ['CANTIDAD DE PRUEBAS', 'PRUEBA', 'PRUEBAS', 'CANTIDAD']);
-                sumaPositividad += obtenerValorClave(item, ['POSITIVIDAD', 'POSITIVO', 'POSITIVOS']);
+                sumaPruebas += obtenerValorClave(item, ['prueba', 'cantid']);
+                sumaPositividad += obtenerValorClave(item, ['positiv']);
             });
 
-            // Actualizar interfaz
+            // ACTUALIZAR INTERFAZ
             document.getElementById('total-respuestas').innerText = filtrados.length;
             document.getElementById('total-pruebas').innerText = sumaPruebas;
             document.getElementById('total-positividad').innerText = sumaPositividad;
