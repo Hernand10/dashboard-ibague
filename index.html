@@ -298,7 +298,8 @@
     <script>
         let datosGlobales = [];
 
-        fetch('/datos')
+        // Forzamos la descarga sin caché agregando un parámetro dinámico
+        fetch('/datos?v=' + new Date().getTime())
             .then(res => res.json())
             .then(data => {
                 datosGlobales = data;
@@ -309,22 +310,34 @@
                 document.getElementById('lista-detalles').innerHTML = '<p style="color:red;">Error al cargar datos.</p>';
             });
 
-        // Función que limpia la clave (quita ":", espacios y convierte a mayúsculas)
-        function obtenerValorCampoLimpio(item, busqueda) {
+        // Extrae el valor numérico buscando la palabra o accediendo por la posición de la columna
+        function obtenerNumeroPorPosicionOCat(item, palabraBuscada, indiceRespaldo) {
             if (!item) return 0;
 
-            for (let key in item) {
-                // Quita dos puntos (:), espacios extra y pasa a mayúsculas
-                let keyLimpia = key.replace(/:/g, '').trim().toUpperCase();
+            let keys = Object.keys(item);
 
-                if (keyLimpia === busqueda || keyLimpia.includes(busqueda)) {
-                    let val = item[key];
+            // 1. Intentar buscar por palabra clave en cualquier columna
+            for (let k of keys) {
+                let keyLimpia = k.toUpperCase();
+                if (keyLimpia.includes(palabraBuscada)) {
+                    let val = item[k];
                     if (val !== null && val !== undefined && val !== '') {
                         let num = parseFloat(String(val).replace(',', '.').replace(/[^\d.]/g, ''));
                         if (!isNaN(num)) return num;
                     }
                 }
             }
+
+            // 2. Si fallan los nombres, acceder directamente por el índice de posición del array de claves
+            if (keys.length > indiceRespaldo) {
+                let keyPorIndice = keys[indiceRespaldo];
+                let val = item[keyPorIndice];
+                if (val !== null && val !== undefined && val !== '') {
+                    let num = parseFloat(String(val).replace(',', '.').replace(/[^\d.]/g, ''));
+                    if (!isNaN(num)) return num;
+                }
+            }
+
             return 0;
         }
 
@@ -343,20 +356,20 @@
                 document.getElementById('subtitulo').innerText = `Consolidado general de respuestas`;
             }
 
-            // Ordenar de mayor a menor por POSITIVIDAD
+            // Indice 7 corresponde a POSITIVIDAD (la 8ª columna)
             filtrados.sort((a, b) => {
-                let valA = obtenerValorCampoLimpio(a, 'POSITIVIDAD');
-                let valB = obtenerValorCampoLimpio(b, 'POSITIVIDAD');
+                let valA = obtenerNumeroPorPosicionOCat(a, 'POSITIV', 7);
+                let valB = obtenerNumeroPorPosicionOCat(b, 'POSITIV', 7);
                 return valB - valA;
             });
 
-            // Suma acumulada de Pruebas y Positividad
             let sumaPruebas = 0;
             let sumaPositividad = 0;
 
             filtrados.forEach(item => {
-                sumaPruebas += obtenerValorCampoLimpio(item, 'CANTIDAD DE PRUEBAS');
-                sumaPositividad += obtenerValorCampoLimpio(item, 'POSITIVIDAD');
+                // Indice 6 = CANTIDAD DE PRUEBAS, Indice 7 = POSITIVIDAD
+                sumaPruebas += obtenerNumeroPorPosicionOCat(item, 'CANTIDAD', 6);
+                sumaPositividad += obtenerNumeroPorPosicionOCat(item, 'POSITIV', 7);
             });
 
             document.getElementById('total-respuestas').innerText = filtrados.length;
