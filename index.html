@@ -309,15 +309,17 @@
                 document.getElementById('lista-detalles').innerHTML = '<p style="color:red;">Error al cargar datos.</p>';
             });
 
-        // Extrae el número buscando cualquier propiedad que contenga el término
-        function obtenerNumero(item, termino) {
+        // Función exacta e infalible leyendo por la propiedad directa o buscando la palabra clave
+        function obtenerValorExacto(item, termino) {
             if (!item) return 0;
+
+            // 1. Intento directo por la clave exacta de tu Tally
             for (let key in item) {
-                let keyUpper = String(key).toUpperCase();
-                if (keyUpper.includes(termino.toUpperCase())) {
-                    let rawVal = item[key];
-                    if (rawVal !== null && rawVal !== undefined) {
-                        let num = parseFloat(String(rawVal).replace(',', '.').replace(/[^\d.]/g, ''));
+                let keyLimpia = key.trim().toUpperCase();
+                if (keyLimpia === termino || keyLimpia.includes(termino)) {
+                    let val = item[key];
+                    if (val !== null && val !== undefined && val !== '') {
+                        let num = parseFloat(String(val).replace(',', '.').replace(/[^\d.]/g, ''));
                         if (!isNaN(num)) return num;
                     }
                 }
@@ -340,10 +342,10 @@
                 document.getElementById('subtitulo').innerText = `Consolidado general de respuestas`;
             }
 
-            // Ordenar de mayor a menor por Positividad
+            // Ordenar de mayor a menor por POSITIVIDAD
             filtrados.sort((a, b) => {
-                let valA = obtenerNumero(a, 'POSITIV');
-                let valB = obtenerNumero(b, 'POSITIV');
+                let valA = obtenerValorExacto(a, 'POSITIVIDAD');
+                let valB = obtenerValorExacto(b, 'POSITIVIDAD');
                 return valB - valA;
             });
 
@@ -352,8 +354,8 @@
             let sumaPositividad = 0;
 
             filtrados.forEach(item => {
-                sumaPruebas += obtenerNumero(item, 'PRUEBA');
-                sumaPositividad += obtenerNumero(item, 'POSITIV');
+                sumaPruebas += obtenerValorExacto(item, 'CANTIDAD DE PRUEBAS');
+                sumaPositividad += obtenerValorExacto(item, 'POSITIVIDAD');
             });
 
             document.getElementById('total-respuestas').innerText = filtrados.length;
