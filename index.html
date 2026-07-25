@@ -18,6 +18,8 @@
             display: flex;
             gap: 20px;
             height: 100vh;
+            overflow: hidden;
+            /* Elimina scroll general */
         }
 
         #mapa-container {
@@ -29,19 +31,14 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            height: 100%;
         }
 
-        #mapa-container h2 {
-            margin: 0 0 5px 0;
-            color: #1a252f;
-            width: 100%;
-        }
-
-        #mapa-container p {
+        #mapa-container h1 {
             margin: 0 0 15px 0;
-            color: #666;
-            font-size: 13px;
-            width: 100%;
+            color: #1a252f;
+            font-size: 35px;
+            text-align: center;
         }
 
         .mapa-wrapper {
@@ -52,11 +49,16 @@
             border-radius: 8px;
             overflow: hidden;
             background: #ffffff;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .mapa-wrapper img {
+        .mapa-wrapper img#img-mapa {
             width: 100%;
-            height: auto;
+            height: 100%;
+            object-fit: contain;
             display: block;
         }
 
@@ -150,6 +152,32 @@
         #c13 {
             top: 57%;
             left: 15%;
+        }
+
+        /* LOGOS SUPERPUESTOS DENTRO/SOBRE EL MAPA */
+        .logos-overlay {
+            position: absolute;
+            top: 67.5%;
+            /* Puedes cambiarlo a bottom: 15px si los prefieres abajo */
+            left: 14.5%;
+            /* O a left: 15px si los quieres a la izquierda */
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            z-index: 20;
+            /* Quedan por encima del mapa y los puntos */
+            background: rgba(255, 255, 255);
+            /* Fondo blanco semitransparente para legibilidad */
+            padding: 6px 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .logo-img {
+            height: 107px;
+            /* Ajusta el tamaño según lo que necesites */
+            width: 155px;
+            object-fit: contain;
         }
 
         /* Panel Lateral */
@@ -258,11 +286,16 @@
 <body>
 
     <div id="mapa-container">
-        <h2>Mapa Oficial de Ibagué por Comunas</h2>
-        <p>Haz clic en el número de cualquier comuna para filtrar la información</p>
+        <h1>Seguimiento a modulo de Dx por comunas de Ibagué</h1>
 
         <div class="mapa-wrapper">
             <img id="img-mapa" src="mapa.png" alt="Mapa de Ibagué">
+
+            <!-- LOGOS DENTRO DEL WRAPPER (SUPERPUESTOS SOBRE LA IMAGEN) -->
+            <div class="logos-overlay">
+                <img src="logofundacion.jpeg" alt="Logo Fundación" class="logo-img">
+                <img src="logohagale.jpeg" alt="Logo Hágale" class="logo-img">
+            </div>
 
             <div id="c1" class="zona-comuna" onclick="actualizarPanel('Comuna 1')">1</div>
             <div id="c2" class="zona-comuna" onclick="actualizarPanel('Comuna 2')">2</div>
@@ -287,12 +320,12 @@
             <button class="btn-reset" onclick="actualizarPanel('Todas las Comunas')">Mostrar Todas</button>
         </div>
 
-        <!-- LISTA DE DETALLES (AHORA ARRIBA DEL RESUMEN) -->
+        <!-- LISTA DE DETALLES -->
         <div id="lista-detalles">
             <p style="color: #666;">Cargando datos...</p>
         </div>
 
-        <!-- RESUMEN DE MÉTRICAS (UBICADO EN LA PARTE INFERIOR) -->
+        <!-- RESUMEN DE MÉTRICAS -->
         <div class="metrics-grid">
             <div class="card-metric">
                 <h3>Encuestas</h3>
