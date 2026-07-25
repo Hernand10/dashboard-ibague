@@ -309,16 +309,15 @@
                 document.getElementById('lista-detalles').innerHTML = '<p style="color:red;">Error al cargar datos.</p>';
             });
 
-        // Búsqueda directa por coincidencia parcial limpia
-        function obtenerNumeroPorClave(item, subcadena) {
+        // Extrae el número buscando cualquier propiedad que contenga el término
+        function obtenerNumero(item, termino) {
+            if (!item) return 0;
             for (let key in item) {
-                // Limpia espacios y convierte a minúsculas
-                let keyLimpia = String(key || "").toLowerCase().trim();
-
-                if (keyLimpia.includes(subcadena)) {
-                    let val = item[key];
-                    if (val !== undefined && val !== null && val !== '') {
-                        let num = parseFloat(String(val).replace(',', '.').replace(/[^0-9.]/g, ''));
+                let keyUpper = String(key).toUpperCase();
+                if (keyUpper.includes(termino.toUpperCase())) {
+                    let rawVal = item[key];
+                    if (rawVal !== null && rawVal !== undefined) {
+                        let num = parseFloat(String(rawVal).replace(',', '.').replace(/[^\d.]/g, ''));
                         if (!isNaN(num)) return num;
                     }
                 }
@@ -341,20 +340,20 @@
                 document.getElementById('subtitulo').innerText = `Consolidado general de respuestas`;
             }
 
-            // ORDENAR DE MAYOR A MENOR POR POSITIVIDAD
+            // Ordenar de mayor a menor por Positividad
             filtrados.sort((a, b) => {
-                let valA = obtenerNumeroPorClave(a, 'positivida');
-                let valB = obtenerNumeroPorClave(b, 'positivida');
+                let valA = obtenerNumero(a, 'POSITIV');
+                let valB = obtenerNumero(b, 'POSITIV');
                 return valB - valA;
             });
 
-            // SUMAS DE MÉTRICAS
+            // Suma acumulada de Pruebas y Positividad
             let sumaPruebas = 0;
             let sumaPositividad = 0;
 
             filtrados.forEach(item => {
-                sumaPruebas += obtenerNumeroPorClave(item, 'pruebas');
-                sumaPositividad += obtenerNumeroPorClave(item, 'positivida');
+                sumaPruebas += obtenerNumero(item, 'PRUEBA');
+                sumaPositividad += obtenerNumero(item, 'POSITIV');
             });
 
             document.getElementById('total-respuestas').innerText = filtrados.length;
