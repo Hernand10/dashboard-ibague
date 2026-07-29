@@ -19,7 +19,6 @@
             gap: 20px;
             height: 100vh;
             overflow: hidden;
-            /* Elimina scroll general */
         }
 
         #mapa-container {
@@ -32,33 +31,31 @@
             flex-direction: column;
             align-items: center;
             height: 100%;
+            overflow-y: auto;
         }
 
         #mapa-container h1 {
             margin: 0 0 15px 0;
             color: #1a252f;
-            font-size: 35px;
+            font-size: 24px;
             text-align: center;
         }
 
         .mapa-wrapper {
             position: relative;
+            display: inline-block;
             width: 100%;
             max-width: 850px;
             border: 1px solid #d1d5db;
             border-radius: 8px;
             overflow: hidden;
             background: #ffffff;
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            margin: 0 auto;
         }
 
         .mapa-wrapper img#img-mapa {
             width: 100%;
-            height: 100%;
-            object-fit: contain;
+            height: auto;
             display: block;
         }
 
@@ -90,17 +87,17 @@
 
         /* POSICIONES DE COMUNAS SOBRE EL MAPA */
         #c1 {
-            top: 34%;
+            top: 33%;
             left: 24%;
         }
 
         #c2 {
-            top: 27%;
+            top: 25%;
             left: 25%;
         }
 
         #c3 {
-            top: 33%;
+            top: 32%;
             left: 34.5%;
         }
 
@@ -110,7 +107,7 @@
         }
 
         #c5 {
-            top: 36.5%;
+            top: 35.5%;
             left: 51%;
         }
 
@@ -120,7 +117,7 @@
         }
 
         #c7 {
-            top: 31%;
+            top: 30%;
             left: 78%;
         }
 
@@ -154,29 +151,30 @@
             left: 15%;
         }
 
-        /* LOGOS SUPERPUESTOS DENTRO/SOBRE EL MAPA */
+        /* LOGOS RESPONSIVOS UBICADOS CON PORCENTAJES IGUAL QUE LAS COMUNAS */
         .logos-overlay {
             position: absolute;
-            top: 67.5%;
-            /* Puedes cambiarlo a bottom: 15px si los prefieres abajo */
+            top: 69%;
+            /* Posición vertical en % respecto al mapa */
             left: 14.5%;
-            /* O a left: 15px si los quieres a la izquierda */
+            /* Posición horizontal en % respecto al mapa */
+            width: 40.4%;
+            /* Ancho en % respecto al mapa para que escala al cambiar el tamaño de pantalla */
             display: flex;
-            gap: 12px;
+            gap: 4%;
             align-items: center;
+            justify-content: center;
             z-index: 20;
-            /* Quedan por encima del mapa y los puntos */
             background: rgba(255, 255, 255);
-            /* Fondo blanco semitransparente para legibilidad */
-            padding: 6px 10px;
-            border-radius: 8px;
+            padding: 1%;
+            border-radius: 6px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         }
 
         .logo-img {
-            height: 107px;
-            /* Ajusta el tamaño según lo que necesites */
-            width: 155px;
+            width: 40%;
+            /* Cada logo ocupa la mitad del contenedor */
+            height: auto;
             object-fit: contain;
         }
 
@@ -291,7 +289,7 @@
         <div class="mapa-wrapper">
             <img id="img-mapa" src="mapa.png" alt="Mapa de Ibagué">
 
-            <!-- LOGOS DENTRO DEL WRAPPER (SUPERPUESTOS SOBRE LA IMAGEN) -->
+            <!-- LOGOS DENTRO DEL MAPA CON POSICIONAMIENTO RELATIVO -->
             <div class="logos-overlay">
                 <img src="logofundacion.jpeg" alt="Logo Fundación" class="logo-img">
                 <img src="logohagale.jpeg" alt="Logo Hágale" class="logo-img">
@@ -320,15 +318,13 @@
             <button class="btn-reset" onclick="actualizarPanel('Todas las Comunas')">Mostrar Todas</button>
         </div>
 
-        <!-- LISTA DE DETALLES -->
         <div id="lista-detalles">
             <p style="color: #666;">Cargando datos...</p>
         </div>
 
-        <!-- RESUMEN DE MÉTRICAS -->
         <div class="metrics-grid">
             <div class="card-metric">
-                <h3>Encuestas</h3>
+                <h3>Brigadas</h3>
                 <p id="total-respuestas">0</p>
             </div>
             <div class="card-metric">
@@ -399,7 +395,6 @@
                 document.getElementById('subtitulo').innerText = `Consolidado general de respuestas`;
             }
 
-            // Ordenar por Positividad
             filtrados.sort((a, b) => {
                 let valA = obtenerNumeroPorPosicionOCat(a, 'POSITIV', 7);
                 let valB = obtenerNumeroPorPosicionOCat(b, 'POSITIV', 7);
