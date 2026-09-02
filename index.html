@@ -85,7 +85,26 @@
             z-index: 10;
         }
 
-        /* POSICIONES DE COMUNAS SOBRE EL MAPA */
+        /* Estilo específico para el botón redondo de N/A */
+        .zona-na {
+            background: #6c757d !important;
+            width: 38px;
+            height: 38px;
+            font-size: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .zona-na:hover {
+            background: #5a6268 !important;
+            transform: translate(-50%, -50%) scale(1.35);
+        }
+
+        /* POSICIONES SOBRE EL MAPA */
+        #c-na {
+            top: 15%;
+            left: 85%;
+        }
+
         #c1 {
             top: 33%;
             left: 24%;
@@ -151,15 +170,12 @@
             left: 15%;
         }
 
-        /* LOGOS RESPONSIVOS UBICADOS CON PORCENTAJES IGUAL QUE LAS COMUNAS */
+        /* LOGOS RESPONSIVOS UBICADOS EN EL MAPA */
         .logos-overlay {
             position: absolute;
             top: 69%;
-            /* Posición vertical en % respecto al mapa */
             left: 14.5%;
-            /* Posición horizontal en % respecto al mapa */
             width: 40.4%;
-            /* Ancho en % respecto al mapa para que escala al cambiar el tamaño de pantalla */
             display: flex;
             gap: 4%;
             align-items: center;
@@ -173,7 +189,6 @@
 
         .logo-img {
             width: 40%;
-            /* Cada logo ocupa la mitad del contenedor */
             height: auto;
             object-fit: contain;
         }
@@ -231,7 +246,7 @@
             margin-bottom: 15px;
         }
 
-        /* Tarjetas de Métricas en la parte inferior */
+        /* Tarjetas de Métricas */
         .metrics-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -289,12 +304,16 @@
         <div class="mapa-wrapper">
             <img id="img-mapa" src="mapa.png" alt="Mapa de Ibagué">
 
-            <!-- LOGOS DENTRO DEL MAPA CON POSICIONAMIENTO RELATIVO -->
+            <!-- LOGOS DENTRO DEL MAPA -->
             <div class="logos-overlay">
                 <img src="logofundacion.jpeg" alt="Logo Fundación" class="logo-img">
                 <img src="logohagale.jpeg" alt="Logo Hágale" class="logo-img">
             </div>
 
+            <!-- BOTÓN REDONDO DE NO APLICA (N/A) -->
+            <div id="c-na" class="zona-comuna zona-na" onclick="actualizarPanel('No aplica')">N/A</div>
+
+            <!-- Botones de Comunas (1 al 13) -->
             <div id="c1" class="zona-comuna" onclick="actualizarPanel('Comuna 1')">1</div>
             <div id="c2" class="zona-comuna" onclick="actualizarPanel('Comuna 2')">2</div>
             <div id="c3" class="zona-comuna" onclick="actualizarPanel('Comuna 3')">3</div>
@@ -384,10 +403,20 @@
             document.getElementById('titulo-comuna').innerText = comuna;
 
             let filtrados = datosGlobales;
-            if (comuna !== "Todas las Comunas") {
+            
+            if (comuna === "No aplica") {
+                filtrados = datosGlobales.filter(item => {
+                    let val = JSON.stringify(item).toLowerCase();
+                    return val.includes('no aplica');
+                });
+                document.getElementById('subtitulo').innerText = `Resultados de brigadas en otros municipios`;
+            } 
+            else if (comuna !== "Todas las Comunas") {
                 let numComuna = comuna.replace(/\D/g, "");
                 filtrados = datosGlobales.filter(item => {
                     let val = JSON.stringify(item).toLowerCase();
+                    // Evita que las comunas urbanas capten registros de "no aplica"
+                    if (val.includes('no aplica')) return false;
                     return val.includes(comuna.toLowerCase()) || (numComuna && val.includes(`comuna ${numComuna}`));
                 });
                 document.getElementById('subtitulo').innerText = `Resultados de ${comuna}`;
@@ -415,7 +444,7 @@
 
             let html = '';
             if (filtrados.length === 0) {
-                html = '<p style="color: #888;">No hay encuestas registradas para esta comuna aún.</p>';
+                html = '<p style="color: #888;">No hay registros para esta selección aún.</p>';
             } else {
                 filtrados.forEach((reg, idx) => {
                     html += `<div class="item-registro"><strong>#${idx + 1}</strong>`;
