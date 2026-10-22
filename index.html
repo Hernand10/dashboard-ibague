@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Oficial - Comunas de Neiva</title>
+    <title>Dashboard Oficial - Comunas de Ibagué</title>
     <style>
         * {
             box-sizing: border-box;
@@ -30,25 +30,22 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            /* Centra el contenido verticalmente para aprovechar el espacio */
             height: 100%;
             overflow-y: auto;
         }
 
         #mapa-container h1 {
-            margin: -10px 0 15px 0;
-            /* El valor negativo (-10px) empuja el título hacia arriba */
+            margin: 0 0 15px 0;
             color: #1a252f;
-            font-size: 30px;
-            /* Aumenta el tamaño del texto (antes estaba en 24px) */
+            font-size: 24px;
             text-align: center;
         }
 
         .mapa-wrapper {
             position: relative;
             display: inline-block;
-            /* Se elimina el max-width fijo para que abrace perfectamente a la imagen sin importar su tamaño */
+            width: 100%;
+            max-width: 850px;
             border: 1px solid #d1d5db;
             border-radius: 8px;
             overflow: hidden;
@@ -57,10 +54,7 @@
         }
 
         .mapa-wrapper img#img-mapa {
-            /* El mapa crecerá hasta casi tocar el borde inferior de la pantalla sin desbordarse */
-            max-height: calc(100vh - 140px);
-            max-width: 100%;
-            width: auto;
+            width: 100%;
             height: auto;
             display: block;
         }
@@ -107,57 +101,57 @@
         /* POSICIONES SOBRE EL MAPA */
         #c-na {
             top: 58%;
-            left: 90%;
+            left: 79%;
         }
 
         #c1 {
-            top: 35%;
-            left: 26%;
+            top: 33%;
+            left: 24%;
         }
 
         #c2 {
-            top: 36%;
-            left: 40%;
+            top: 25%;
+            left: 25%;
         }
 
         #c3 {
-            top: 49%;
+            top: 32%;
             left: 34.5%;
         }
 
         #c4 {
-            top: 58%;
-            left: 38%;
+            top: 36%;
+            left: 42.5%;
         }
 
         #c5 {
-            top: 46%;
+            top: 35.5%;
             left: 51%;
         }
 
         #c6 {
-            top: 75%;
-            left: 50%;
+            top: 28%;
+            left: 55%;
         }
 
         #c7 {
-            top: 54.5%;
-            left: 61%;
+            top: 30%;
+            left: 78%;
         }
 
         #c8 {
-            top: 61%;
-            left: 59%;
+            top: 39%;
+            left: 65%;
         }
 
         #c9 {
-            top: 20%;
-            left: 39%;
+            top: 47%;
+            left: 52%;
         }
 
         #c10 {
-            top: 40%;
-            left: 69.9%;
+            top: 43%;
+            left: 37.5%;
         }
 
         #c11 {
@@ -178,8 +172,8 @@
         /* LOGOS RESPONSIVOS UBICADOS EN EL MAPA */
         .logos-overlay {
             position: absolute;
-            top: 4%;
-            left: 57%;
+            top: 69%;
+            left: 14.5%;
             width: 40.4%;
             display: flex;
             gap: 4%;
@@ -189,7 +183,7 @@
             background: rgba(255, 255, 255);
             padding: 1%;
             border-radius: 6px;
-            box-shadow: 0 2px 8px rgba(3, 3, 3, 0.15);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         }
 
         .logo-img {
@@ -298,65 +292,16 @@
         .item-registro strong {
             color: #333;
         }
-
-        /* =========================================
-           DISEÑO RESPONSIVO (MÓVILES Y TABLETS)
-           ========================================= */
-        @media (max-width: 900px) {
-            body {
-                flex-direction: column;
-                height: auto;
-                overflow-y: auto;
-                padding: 10px;
-            }
-
-            #mapa-container {
-                flex: none;
-                width: 100%;
-                overflow-y: visible;
-                height: auto;
-            }
-
-            .mapa-wrapper {
-                width: 100%;
-                /* En móviles sí forzamos el ancho completo */
-                max-width: 100%;
-            }
-
-            .mapa-wrapper img#img-mapa {
-                width: 100%;
-                max-height: none;
-                /* Quitamos el límite de alto en móviles para evitar recortes */
-            }
-
-            #panel-datos {
-                flex: none;
-                width: 100%;
-                min-height: 500px;
-            }
-
-            .zona-comuna {
-                width: 22px;
-                height: 22px;
-                font-size: 10px;
-            }
-
-            .zona-na {
-                width: 32px;
-                height: 32px;
-                font-size: 9px;
-            }
-        }
     </style>
 </head>
 
 <body>
 
     <div id="mapa-container">
-        <h1>Seguimiento a modulo de Dx por comunas de Neiva</h1>
+        <h1>Seguimiento a modulo de Dx por comunas de Ibagué</h1>
 
         <div class="mapa-wrapper">
-            <img id="img-mapa" src="mapa.png" alt="Mapa de Neiva">
+            <img id="img-mapa" src="mapa.png" alt="Mapa de Ibagué">
 
             <!-- LOGOS DENTRO DEL MAPA -->
             <div class="logos-overlay">
@@ -378,7 +323,9 @@
             <div id="c8" class="zona-comuna" onclick="actualizarPanel('Comuna 8')">8</div>
             <div id="c9" class="zona-comuna" onclick="actualizarPanel('Comuna 9')">9</div>
             <div id="c10" class="zona-comuna" onclick="actualizarPanel('Comuna 10')">10</div>
-
+            <div id="c11" class="zona-comuna" onclick="actualizarPanel('Comuna 11')">11</div>
+            <div id="c12" class="zona-comuna" onclick="actualizarPanel('Comuna 12')">12</div>
+            <div id="c13" class="zona-comuna" onclick="actualizarPanel('Comuna 13')">13</div>
         </div>
     </div>
 
@@ -455,14 +402,14 @@
             document.getElementById('titulo-comuna').innerText = comuna;
 
             let filtrados = datosGlobales;
-
+            
             if (comuna === "No aplica") {
                 filtrados = datosGlobales.filter(item => {
                     let val = JSON.stringify(item).toLowerCase();
                     return val.includes('no aplica');
                 });
                 document.getElementById('subtitulo').innerText = `Resultados de brigadas en otros municipios`;
-            }
+            } 
             else if (comuna !== "Todas las Comunas") {
                 let numComuna = comuna.replace(/\D/g, "");
                 filtrados = datosGlobales.filter(item => {
